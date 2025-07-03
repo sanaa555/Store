@@ -3,6 +3,7 @@ import express,{Application} from 'express';
 import morgan from 'morgan' ;
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import errorMiddleware from '../middleware/error.middleware';
 
 
 
@@ -31,6 +32,7 @@ app.use(rateLimit({
 
 // add routing for /path
 app.get('/',(req,res)=>{
+    throw new Error(" error exist");
     res.json({
         message:"Hello World",
     });})
@@ -43,6 +45,13 @@ app.post('/',(req,res)=>{
         message:"Hello World",
         data:req.body,
     });})
+app.use((_req, res) => {
+    res.status(404).json({
+        message: "Not Found"
+    });
+});
+app.use(errorMiddleware);
+
 // start express server
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`);
